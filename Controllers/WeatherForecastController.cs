@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using Nwu_Tech_Trends;
 
-namespace Nwu_Tech_Trends.Controllers
+namespace WebAppSecureClass.Controllers
 {
+    [Authorize] // Ensures that only authenticated users can access this controller
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
