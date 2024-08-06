@@ -1,0 +1,6 @@
+@Nwu_Tech_Trends_HostAddress = http://localhost:5023
+
+GET {{Nwu_Tech_Trends_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
