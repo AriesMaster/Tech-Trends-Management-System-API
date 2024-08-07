@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
+using Nwu_Tech_Trends.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,11 +20,11 @@ builder.Services.AddControllers();
 
 var connectionString = builder.Configuration.GetConnectionString("ConnStr")
     ?? throw new InvalidOperationException("Connection string 'ConnStr' is not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<NWUDATABASEContext>(options => options.UseSqlServer(connectionString));
 
 // For Identity  
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddEntityFrameworkStores<NWUDATABASEContext>()
     .AddDefaultTokenProviders();
 
 // Adding Authentication  
@@ -38,15 +39,15 @@ builder.Services.AddAuthentication(options =>
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
 
-    var jwtSecret = builder.Configuration["Jwt:Secret"]
+    var jwtSecret = builder.Configuration["JWT:Secret"]
         ?? throw new InvalidOperationException("JWT Secret is not found.");
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
-        ValidIssuer = builder.Configuration["Jwt:ValidIssuer"],
-        ValidAudience = builder.Configuration["Jwt:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
     };
 });
