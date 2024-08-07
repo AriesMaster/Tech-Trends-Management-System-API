@@ -6,7 +6,7 @@ namespace Nwu_Tech_Trends.Models
     public partial class JobTelemetry
     {
         public int Id { get; set; }
-        public string? ProccesId { get; set; }
+        public Guid? ProcessId { get; set; }
         public string? JobId { get; set; }
         public string? QueueId { get; set; }
         public string? StepDescription { get; set; }

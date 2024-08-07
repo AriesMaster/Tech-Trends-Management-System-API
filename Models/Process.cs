@@ -15,8 +15,6 @@ namespace Nwu_Tech_Trends.Models
         public string? ProcessConfigUrl { get; set; }
         public string? ReportUrl { get; set; }
         public Guid? ProjectId { get; set; }
-        public string? DefaultGeography { get; set; }
-        public string? DefaultBusinessFunction { get; set; }
         public string? Platform { get; set; }
     }
 }

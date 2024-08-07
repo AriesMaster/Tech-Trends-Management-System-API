@@ -7,17 +7,13 @@ namespace Nwu_Tech_Trends.Models
 {
     public partial class NWUDATABASEContext : DbContext
     {
-        private readonly IConfiguration _configuration;
-
-        public NWUDATABASEContext(IConfiguration configuration)
+        public NWUDATABASEContext()
         {
-            _configuration = configuration;
         }
 
-        public NWUDATABASEContext(DbContextOptions<NWUDATABASEContext> options, IConfiguration configuration)
+        public NWUDATABASEContext(DbContextOptions<NWUDATABASEContext> options)
             : base(options)
         {
-            _configuration = configuration;
         }
 
         public virtual DbSet<Client> Clients { get; set; } = null!;
@@ -29,8 +25,8 @@ namespace Nwu_Tech_Trends.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var connectionString = _configuration.GetConnectionString("ConnStr");
-                optionsBuilder.UseSqlServer(connectionString);
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Data Source=techtrends2024.database.windows.net;Initial Catalog=NWUDATABASE;Persist Security Info=True;User ID=cmpg323api;Password=CmpgApi2024;Encrypt=True;Trust Server Certificate=True");
             }
         }
 
@@ -41,8 +37,8 @@ namespace Nwu_Tech_Trends.Models
                 entity.ToTable("Client", "Config");
 
                 entity.Property(e => e.ClientId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ClientID");
+                    .HasColumnName("ClientID")
+                    .HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.DateOnboarded).HasColumnType("datetime");
             });
@@ -66,14 +62,10 @@ namespace Nwu_Tech_Trends.Models
                 entity.Property(e => e.Geography).IsUnicode(false);
 
                 entity.Property(e => e.JobId)
-                    .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("JobID");
 
-                entity.Property(e => e.ProccesId)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ProccesID");
+                entity.Property(e => e.ProcessId).HasColumnName("ProcessID");
 
                 entity.Property(e => e.QueueId)
                     .IsUnicode(false)
@@ -98,19 +90,7 @@ namespace Nwu_Tech_Trends.Models
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
 
-                entity.Property(e => e.DefaultBusinessFunction)
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('Unspecified')");
-
-                entity.Property(e => e.DefaultGeography)
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("('Global')");
-
-                entity.Property(e => e.Platform)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.Platform).IsUnicode(false);
 
                 entity.Property(e => e.ProcessConfigUrl)
                     .IsUnicode(false)
@@ -141,19 +121,7 @@ namespace Nwu_Tech_Trends.Models
 
                 entity.Property(e => e.ProjectCreationDate)
                     .HasColumnType("datetime")
-                    .HasDefaultValueSql("(dateadd(hour,(2),getdate()))");
-
-                entity.Property(e => e.ProjectDescription)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ProjectName)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ProjectStatus)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                    .HasDefaultValueSql("(getdate())");
             });
 
             OnModelCreatingPartial(modelBuilder);
