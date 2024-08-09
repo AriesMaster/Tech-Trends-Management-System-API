@@ -1,7 +1,6 @@
-﻿using JWTAuthentication.Authentication;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Nwu_Tech_Trends.Models;
+using Nwu_Tech_Trends.Models; // Importing the correct namespace
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +12,9 @@ namespace JWTAuthentication.Controllers
     [ApiController]
     public class TelemetryController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly NWUDATABASEContext _context;
 
-        public TelemetryController(ApplicationDbContext context)
+        public TelemetryController(NWUDATABASEContext context)
         {
             _context = context;
         }
@@ -51,6 +50,8 @@ namespace JWTAuthentication.Controllers
                 return BadRequest(new { Message = "Telemetry data cannot be null." });
             }
 
+            jobTelemetry.EntryDate = jobTelemetry.EntryDate.Date;
+
             _context.JobTelemetries.Add(jobTelemetry);
             await _context.SaveChangesAsync();
 
@@ -73,6 +74,9 @@ namespace JWTAuthentication.Controllers
             }
 
             _context.Entry(existingTelemetry).CurrentValues.SetValues(jobTelemetry);
+
+            existingTelemetry.EntryDate = existingTelemetry.EntryDate.Date;
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -115,17 +119,19 @@ namespace JWTAuthentication.Controllers
 
         // GET: api/Telemetry/GetSavingsByProject
         [HttpGet("GetSavingsByProject")]
-        public async Task<ActionResult<object>> GetSavingsByProject(Guid projectId, DateTime startDate, DateTime endDate)
+        public async Task<ActionResult<object>> GetSavingsByProject(Guid projectId, DateTime startDate)
         {
-            if (startDate > endDate)
+            if (startDate == default)
             {
-                return BadRequest(new { Message = "Start date cannot be later than end date." });
+                return BadRequest(new { Message = "Start date cannot be empty." });
             }
+
+            var endDate = DateTime.Now;
 
             var savings = await _context.JobTelemetries
                 .Where(t => t.ProcessId == projectId &&
-                            t.EntryDate >= startDate &&
-                            t.EntryDate <= endDate)
+                            t.EntryDate >= startDate.Date &&
+                            t.EntryDate <= endDate.Date)
                 .GroupBy(t => t.ProcessId)
                 .Select(g => new
                 {
@@ -145,17 +151,24 @@ namespace JWTAuthentication.Controllers
 
         // GET: api/Telemetry/GetSavingsByClient
         [HttpGet("GetSavingsByClient")]
-        public async Task<ActionResult<object>> GetSavingsByClient(string clientId, DateTime startDate, DateTime endDate)
+        public async Task<ActionResult<object>> GetSavingsByClient(string clientId, DateTime startDate)
         {
-            if (startDate > endDate)
+            if (string.IsNullOrEmpty(clientId))
             {
-                return BadRequest(new { Message = "Start date cannot be later than end date." });
+                return BadRequest(new { Message = "Client ID cannot be empty." });
             }
+
+            if (startDate == default)
+            {
+                return BadRequest(new { Message = "Start date cannot be empty." });
+            }
+
+            var endDate = DateTime.Now;
 
             var savings = await _context.JobTelemetries
                 .Where(t => t.UniqueReference == clientId &&
-                            t.EntryDate >= startDate &&
-                            t.EntryDate <= endDate)
+                            t.EntryDate >= startDate.Date &&
+                            t.EntryDate <= endDate.Date)
                 .GroupBy(t => t.UniqueReference)
                 .Select(g => new
                 {

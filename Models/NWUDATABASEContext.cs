@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Nwu_Tech_Trends.Models
 {
     public partial class NWUDATABASEContext : DbContext
     {
-        public NWUDATABASEContext()
-        {
-        }
-
         public NWUDATABASEContext(DbContextOptions<NWUDATABASEContext> options)
             : base(options)
         {
@@ -20,15 +13,6 @@ namespace Nwu_Tech_Trends.Models
         public virtual DbSet<JobTelemetry> JobTelemetries { get; set; } = null!;
         public virtual DbSet<Process> Processes { get; set; } = null!;
         public virtual DbSet<Project> Projects { get; set; } = null!;
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=techtrends2024.database.windows.net;Initial Catalog=NWUDATABASE;Persist Security Info=True;User ID=cmpg323api;Password=CmpgApi2024;Encrypt=True;Trust Server Certificate=True");
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -8,9 +8,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.OpenApi.Models;
+using Nwu_Tech_Trends.Models; // Importing the correct namespace
 using System.Collections.Generic;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,11 +21,11 @@ builder.Services.AddControllers();
 // Configure the database context
 var connectionString = builder.Configuration.GetConnectionString("ConnStr")
     ?? throw new InvalidOperationException("Connection string 'ConnStr' is not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<NWUDATABASEContext>(options => options.UseSqlServer(connectionString)); // Change to NWUDATABASEContext
 
 // Configure Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddEntityFrameworkStores<NWUDATABASEContext>() // Change to NWUDATABASEContext
     .AddDefaultTokenProviders();
 
 // Configure Authentication
@@ -62,7 +63,7 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "NWU Tech Trends", Version = "v1" });
 
     // Define the Bearer token security scheme
     var securityScheme = new OpenApiSecurityScheme
