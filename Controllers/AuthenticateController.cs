@@ -1,8 +1,10 @@
 ﻿using JWTAuthentication.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -21,16 +23,17 @@ namespace JWTAuthentication.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthenticateController> _logger;
 
-        public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, ILogger<AuthenticateController> logger)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        [HttpPost]
-        [Route("login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             if (model == null || string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Password))
@@ -56,7 +59,7 @@ namespace JWTAuthentication.Controllers
                 var token = new JwtSecurityToken(
                     issuer: _configuration["JWT:ValidIssuer"],
                     audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(3),
+                    expires: DateTime.Now.AddHours(Convert.ToDouble(_configuration["JWT:TokenExpiryHours"] ?? "3")),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
@@ -68,11 +71,12 @@ namespace JWTAuthentication.Controllers
                 });
             }
 
+            _logger.LogWarning("Invalid login attempt for username: {Username}", model.Username);
             return Unauthorized(new { Status = "Error", Message = "Invalid username or password." });
         }
 
-        [HttpPost]
-        [Route("register")]
+        [HttpPost("register")]
+        [Authorize(Roles = UserRoles.Admin)]  // Admin role required for registration
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             if (model == null || string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Password))
@@ -80,7 +84,10 @@ namespace JWTAuthentication.Controllers
 
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "User already exists!" });
+                return Conflict(new { Status = "Error", Message = "User already exists!" });
+
+            if (model.Password.Length < 6) // Example of a simple password strength check
+                return BadRequest("Password should be at least 6 characters long.");
 
             var user = new ApplicationUser
             {
@@ -92,15 +99,17 @@ namespace JWTAuthentication.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
-                var errors = string.Join(", ", result.Errors);
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = $"User creation failed: {errors}" });
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                _logger.LogError("User creation failed for username: {Username}. Errors: {Errors}", model.Username, string.Join(", ", errors));
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = string.Join(", ", errors) });
             }
 
+            _logger.LogInformation("User created successfully: {Username}", model.Username);
             return Ok(new { Status = "Success", Message = "User created successfully!" });
         }
 
-        [HttpPost]
-        [Route("register-admin")]
+        [HttpPost("register-admin")]
+        [Authorize(Roles = UserRoles.Admin)]  // Admin role required for admin registration
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {
             if (model == null || string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Password))
@@ -108,7 +117,10 @@ namespace JWTAuthentication.Controllers
 
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "User already exists!" });
+                return Conflict(new { Status = "Error", Message = "User already exists!" });
+
+            if (model.Password.Length < 6) // Example of a simple password strength check
+                return BadRequest("Password should be at least 6 characters long.");
 
             var user = new ApplicationUser
             {
@@ -120,8 +132,9 @@ namespace JWTAuthentication.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
-                var errors = string.Join(", ", result.Errors);
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = $"User creation failed: {errors}" });
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                _logger.LogError("Admin user creation failed for username: {Username}. Errors: {Errors}", model.Username, string.Join(", ", errors));
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = string.Join(", ", errors) });
             }
 
             await EnsureRolesExistAsync();
@@ -129,6 +142,7 @@ namespace JWTAuthentication.Controllers
             if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
                 await _userManager.AddToRoleAsync(user, UserRoles.Admin);
 
+            _logger.LogInformation("Admin user created successfully: {Username}", model.Username);
             return Ok(new { Status = "Success", Message = "Admin user created successfully!" });
         }
 

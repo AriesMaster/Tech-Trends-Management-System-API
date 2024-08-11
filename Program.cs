@@ -22,6 +22,9 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 // Configure services
 builder.Services.AddControllers();
 
+// Configure logging
+builder.Logging.AddConsole();
+
 // Configure the database context
 var connectionString = builder.Configuration.GetConnectionString("ConnStr")
     ?? throw new InvalidOperationException("Connection string 'ConnStr' is not found.");
