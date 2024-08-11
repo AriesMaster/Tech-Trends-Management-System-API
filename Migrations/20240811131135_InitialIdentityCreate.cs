@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Nwu_Tech_Trends.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialIdentityCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

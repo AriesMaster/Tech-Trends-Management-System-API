@@ -9,23 +9,30 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Nwu_Tech_Trends.Models; // Importing the correct namespace
+using Nwu_Tech_Trends.dBContexts;
 using System.Collections.Generic;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add configuration from appsettings.json
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
+// Configure services
 builder.Services.AddControllers();
 
 // Configure the database context
 var connectionString = builder.Configuration.GetConnectionString("ConnStr")
     ?? throw new InvalidOperationException("Connection string 'ConnStr' is not found.");
-builder.Services.AddDbContext<NWUDATABASEContext>(options => options.UseSqlServer(connectionString)); // Change to NWUDATABASEContext
+
+// Register the NWUDATABASEContext
+builder.Services.AddDbContext<NWUDATABASEContext>(options =>
+    options.UseSqlServer(connectionString));
 
 // Configure Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<NWUDATABASEContext>() // Change to NWUDATABASEContext
+    .AddEntityFrameworkStores<NWUDATABASEContext>()
     .AddDefaultTokenProviders();
 
 // Configure Authentication
@@ -53,11 +60,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Configure Authorization
 builder.Services.AddAuthorization();
-
-// Add configuration from appsettings.json
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddEnvironmentVariables();
 
 // Configure Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
@@ -65,7 +69,6 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "NWU Tech Trends", Version = "v1" });
 
-    // Define the Bearer token security scheme
     var securityScheme = new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -77,7 +80,6 @@ builder.Services.AddSwaggerGen(c =>
     };
     c.AddSecurityDefinition("Bearer", securityScheme);
 
-    // Require the Bearer token for all API operations
     var securityRequirement = new OpenApiSecurityRequirement
     {
         {

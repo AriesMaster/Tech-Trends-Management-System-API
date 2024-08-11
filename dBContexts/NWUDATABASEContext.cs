@@ -1,14 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Nwu_Tech_Trends.Models;
+using JWTAuthentication.Authentication;
 
-namespace Nwu_Tech_Trends.Models
+namespace Nwu_Tech_Trends.dBContexts
 {
-    public partial class NWUDATABASEContext : DbContext
+    public partial class NWUDATABASEContext : IdentityDbContext<ApplicationUser>
     {
         public NWUDATABASEContext(DbContextOptions<NWUDATABASEContext> options)
             : base(options)
         {
         }
 
+        // Define DbSets for your entities
         public virtual DbSet<Client> Clients { get; set; } = null!;
         public virtual DbSet<JobTelemetry> JobTelemetries { get; set; } = null!;
         public virtual DbSet<Process> Processes { get; set; } = null!;
@@ -16,6 +20,9 @@ namespace Nwu_Tech_Trends.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Call the base method to configure Identity tables
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Client>(entity =>
             {
                 entity.ToTable("Client", "Config");

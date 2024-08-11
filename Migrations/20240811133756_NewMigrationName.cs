@@ -4,7 +4,7 @@
 
 namespace Nwu_Tech_Trends.Migrations
 {
-    public partial class AddJobTelemetry : Migration
+    public partial class NewMigrationName : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

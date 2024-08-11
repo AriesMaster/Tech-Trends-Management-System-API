@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using JWTAuthentication.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace JWTAuthentication.Authentication
+namespace Nwu_Tech_Trends.dBContexts
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
@@ -13,7 +14,6 @@ namespace JWTAuthentication.Authentication
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Add any additional configuration here if needed
         }
     }
 }

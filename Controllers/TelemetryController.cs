@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Nwu_Tech_Trends.dBContexts;
 using Nwu_Tech_Trends.Models; // Importing the correct namespace
 using System;
 using System.Collections.Generic;
