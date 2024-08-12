@@ -4,6 +4,9 @@
 
 The NWU Tech Trends Management System provides a set of RESTful APIs for managing and accessing telemetry data. This data tracks the time saved by automations, associating this time saved with cost and grouping it by project and client. The system is designed to work with RESTful APIs, which allow for effective management and interaction with data sources over HTTP.
 
+
+![Screenshot 2024-08-12 163512](https://github.com/user-attachments/assets/1488a476-4083-4649-87e9-05a5c91288d3)
+
 ## Authentication
 
 ### Login
