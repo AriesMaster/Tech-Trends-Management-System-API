@@ -84,3 +84,25 @@ The NWU Tech Trends Management System employs RESTful APIs to manage telemetry d
 ## Security
 
 Ensure that authentication has been correctly implemented and validated for secure access to the API endpoints.
+
+
+## References
+
+- Microsoft Docs (n.d.). *Tutorial: Create a web API with ASP.NET Core*. Available at: [https://docs.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-5.0](https://docs.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-5.0) (Accessed: 12 August 2024).
+
+- Microsoft Docs (n.d.). *Create a web API with ASP.NET Core controllers*. Available at: [https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/?view=aspnetcore-5.0](https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/?view=aspnetcore-5.0) (Accessed: 12 August 2024).
+
+- Microsoft Docs (n.d.). *ASP.NET Core web API documentation with Swagger / OpenAPI*. Available at: [https://docs.microsoft.com/en-us/aspnet/core/tutorials/web-api-help-pages-using-swagger?view=aspnetcore-5.0](https://docs.microsoft.com/en-us/aspnet/core/tutorials/web-api-help-pages-using-swagger?view=aspnetcore-5.0) (Accessed: 12 August 2024).
+
+- Microsoft Docs (n.d.). *Create microservices with .NET and ASP.NET Core*. Available at: [https://docs.microsoft.com/en-us/dotnet/architecture/microservices/](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/) (Accessed: 12 August 2024).
+
+- Microsoft (2020). *Entity Framework Core 3.1 - Getting Started*. Available at: [https://docs.microsoft.com/en-us/ef/core/get-started/](https://docs.microsoft.com/en-us/ef/core/get-started/) (Accessed: 12 August 2024).
+
+- Microsoft Docs (n.d.). *Join two entities in .NET Core, using lambda and Entity Framework Core*. Available at: [https://docs.microsoft.com/en-us/ef/core/querying/](https://docs.microsoft.com/en-us/ef/core/querying/) (Accessed: 12 August 2024).
+
+- Microsoft Docs (n.d.). *Publish an ASP.NET Core web API to Azure API Management with Visual Studio*. Available at: [https://docs.microsoft.com/en-us/azure/api-management/publish-aspnet-core-web-api-visual-studio](https://docs.microsoft.com/en-us/azure/api-management/publish-aspnet-core-web-api-visual-studio) (Accessed: 12 August 2024).
+
+- Pape, R. (n.d.). *Automating ASP.NET Core Web API Creation That Communicates with Your Database in 60 Seconds or Less*. Available at: [URL] (Accessed: 12 August 2024).
+
+- Microsoft Docs (n.d.). *Quickstart: Create a .NET Core app in Azure App Service*. Available at: [https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore?tabs=net80&pivots=development-environment-vs#launch-the-publish-wizard?utm_source=aspnet-start-page&utm_campaign=vside](https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore?tabs=net80&pivots=development-environment-vs#launch-the-publish-wizard?utm_source=aspnet-start-page&utm_campaign=vside) (Accessed: 12 August 2024).
+
