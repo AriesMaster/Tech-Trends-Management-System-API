@@ -106,3 +106,7 @@ Ensure that authentication has been correctly implemented and validated for secu
 
 - Microsoft Docs (n.d.). *Quickstart: Create a .NET Core app in Azure App Service*. Available at: [https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore?tabs=net80&pivots=development-environment-vs#launch-the-publish-wizard?utm_source=aspnet-start-page&utm_campaign=vside](https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore?tabs=net80&pivots=development-environment-vs#launch-the-publish-wizard?utm_source=aspnet-start-page&utm_campaign=vside) (Accessed: 12 August 2024).
 
+## References lists Doc
+
+
+[reference list.pdf](https://github.com/user-attachments/files/16588317/reference.list.pdf)
