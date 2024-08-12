@@ -88,6 +88,47 @@ The NWU Tech Trends Management System employs RESTful APIs to manage telemetry d
 
 Ensure that authentication has been correctly implemented and validated for secure access to the API endpoints.
 
+# Project Requirements and Learnings
+
+## CRUD RESTful API Implementation
+
+- **GET**: Retrieve data from the server.
+- **POST**: Create new data entries.
+- **PATCH**: Update existing data entries.
+- **DELETE**: Remove data entries from the server.
+
+**What I Learned:**
+Understanding how to create and manage API endpoints for different operations is crucial for developing robust web services. It helps in handling data interactions in a standardized way.
+
+## Database Connection Using Entity Framework Core
+
+- **Entity Framework Core (EF Core)**: An Object-Relational Mapper (ORM) that connects your API to a database, allowing you to interact with the database using .NET objects.
+
+**What I Learned:**
+I gained experience in setting up and configuring EF Core, which is essential for efficient database management and operations. This includes creating models, configuring DbContexts, and managing migrations.
+
+## Managing and Querying Telemetry Data
+
+- Implement functionality to handle telemetry data, including recording, updating, and querying this data based on specific criteria.
+
+**What I Learned:**
+Handling specific types of data (like telemetry) and developing features to query and manage this data is valuable for understanding data management in real-world applications. It also includes skills in creating effective queries and processing data.
+
+## Security and Authentication
+
+- Ensure that your API is secure and only accessible by authorized users. This typically involves implementing authentication mechanisms (like JWT tokens) and configuring appropriate security policies.
+
+**What I Learned:**
+Implementing security measures is critical for protecting data and ensuring that only authorized users can access certain parts of your API. This is important for maintaining data privacy and integrity.
+
+## Hosting on Azure and GitHub Management
+
+- Deploy your API to Azure, a cloud service provider, and keep your project updated on GitHub.
+
+**What I Learned:**
+Hosting on Azure gave me practical experience with cloud services and deployment practices. Managing my code on GitHub helped me understand version control and collaboration in a development environment.
+
+
 
 ## References
 
