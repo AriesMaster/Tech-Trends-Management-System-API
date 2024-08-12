@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace JWTAuthentication.Controllers
 {
-    
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticateController : ControllerBase
