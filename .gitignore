@@ -362,3 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+
+# I protected my sensitive information from being exposed on GitHub by storing it in a JSON file and adding it to .gitignore. This ensures that when I push my project, the sensitive data remains private 
+appsettings.json
+
