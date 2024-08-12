@@ -1,5 +1,4 @@
 ﻿using JWTAuthentication.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +12,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JWTAuthentication.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticateController : ControllerBase
@@ -76,7 +77,6 @@ namespace JWTAuthentication.Controllers
         }
 
         [HttpPost("register")]
-        [Authorize(Roles = UserRoles.Admin)]  // Admin role required for registration
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             if (model == null || string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Password))
@@ -86,7 +86,7 @@ namespace JWTAuthentication.Controllers
             if (userExists != null)
                 return Conflict(new { Status = "Error", Message = "User already exists!" });
 
-            if (model.Password.Length < 6) // Example of a simple password strength check
+            if (model.Password.Length < 6) // Simple password strength check
                 return BadRequest("Password should be at least 6 characters long.");
 
             var user = new ApplicationUser
@@ -109,7 +109,7 @@ namespace JWTAuthentication.Controllers
         }
 
         [HttpPost("register-admin")]
-        [Authorize(Roles = UserRoles.Admin)]  // Admin role required for admin registration
+        [Authorize(Roles = "Admin")]  // Admin role required for admin registration
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {
             if (model == null || string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Password))
@@ -119,7 +119,7 @@ namespace JWTAuthentication.Controllers
             if (userExists != null)
                 return Conflict(new { Status = "Error", Message = "User already exists!" });
 
-            if (model.Password.Length < 6) // Example of a simple password strength check
+            if (model.Password.Length < 6) // Simple password strength check
                 return BadRequest("Password should be at least 6 characters long.");
 
             var user = new ApplicationUser
@@ -139,8 +139,8 @@ namespace JWTAuthentication.Controllers
 
             await EnsureRolesExistAsync();
 
-            if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
-                await _userManager.AddToRoleAsync(user, UserRoles.Admin);
+            if (await _roleManager.RoleExistsAsync("Admin"))
+                await _userManager.AddToRoleAsync(user, "Admin");
 
             _logger.LogInformation("Admin user created successfully: {Username}", model.Username);
             return Ok(new { Status = "Success", Message = "Admin user created successfully!" });
@@ -148,11 +148,14 @@ namespace JWTAuthentication.Controllers
 
         private async Task EnsureRolesExistAsync()
         {
-            if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-
-            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+            var roles = new[] { "Admin", "User" }; // Define your roles here
+            foreach (var role in roles)
+            {
+                if (!await _roleManager.RoleExistsAsync(role))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
         }
     }
 }

@@ -6,9 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+
+
 
 namespace JWTAuthentication.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TelemetryController : ControllerBase
@@ -22,6 +26,7 @@ namespace JWTAuthentication.Controllers
 
         // GET: api/Telemetry
         [HttpGet]
+        
         public async Task<ActionResult<IEnumerable<JobTelemetry>>> GetJobTelemetries()
         {
             var jobTelemetries = await _context.JobTelemetries.ToListAsync();

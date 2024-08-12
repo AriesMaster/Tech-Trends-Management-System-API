@@ -25,17 +25,21 @@ builder.Services.AddControllers();
 // Configure logging
 builder.Logging.AddConsole();
 
-// Configure the database context
+// Configure the database contexts
 var connectionString = builder.Configuration.GetConnectionString("ConnStr")
     ?? throw new InvalidOperationException("Connection string 'ConnStr' is not found.");
 
-// Register the NWUDATABASEContext
+// Register the NWUDATABASEContext for API calls
 builder.Services.AddDbContext<NWUDATABASEContext>(options =>
+    options.UseSqlServer(connectionString));
+
+// Register the ApplicationDbContext for Identity
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 // Configure Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<NWUDATABASEContext>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()  // Use ApplicationDbContext for Identity
     .AddDefaultTokenProviders();
 
 // Configure Authentication
@@ -85,32 +89,28 @@ builder.Services.AddSwaggerGen(c =>
 
     var securityRequirement = new OpenApiSecurityRequirement
     {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new List<string>()
-        }
+        { securityScheme, new List<string>() }
     };
     c.AddSecurityRequirement(securityRequirement);
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Middleware configuration
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "NWU Tech Trends v1");
+    });
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
+app.UseRouting();
+
+// Authentication and Authorization middleware
+app.UseAuthentication(); // Ensure this is placed before UseAuthorization
 app.UseAuthorization();
 
 app.MapControllers();
